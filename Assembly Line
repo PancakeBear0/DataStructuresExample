@@ -1,0 +1,195 @@
+class ArrayStack:
+  """LIFO Stack implementation using a Python list as underlying storage."""
+
+  def __init__(self):
+    """Create an empty stack."""
+    self._data = []                       # nonpublic list instance
+
+  def __len__(self):
+    """Return the number of elements in the stack."""
+    return len(self._data)
+
+  def is_empty(self):
+    """Return True if the stack is empty."""
+    return len(self._data) == 0
+
+  def push(self, e):
+    """Add element e to the top of the stack."""
+    self._data.append(e)                  # new item stored at end of list
+
+  def top(self):
+    """Return (but do not remove) the element at the top of the stack.
+
+    Raise Empty exception if the stack is empty.
+    """
+    if self.is_empty():
+      raise Empty('Stack is empty')
+    return self._data[-1]                 # the last item in the list
+
+  def pop(self):
+    """Remove and return the element from the top of the stack (i.e., LIFO).
+
+    Raise Empty exception if the stack is empty.
+    """
+    if self.is_empty():
+      raise Empty('Stack is empty')
+    return self._data.pop()               # remove last item from list
+
+
+# In[2]:
+
+
+class ArrayQueue:
+  """FIFO queue implementation using a Python list as underlying storage."""
+  DEFAULT_CAPACITY = 10          # moderate capacity for all new queues
+
+  def __init__(self):
+    """Create an empty queue."""
+    self._data = [None] * ArrayQueue.DEFAULT_CAPACITY
+    self._size = 0
+    self._front = 0
+
+  def __len__(self):
+    """Return the number of elements in the queue."""
+    return self._size
+
+  def is_empty(self):
+    """Return True if the queue is empty."""
+    return self._size == 0
+
+  def first(self):
+    """Return (but do not remove) the element at the front of the queue.
+
+    Raise Empty exception if the queue is empty.
+    """
+    if self.is_empty():
+      raise Empty('Queue is empty')
+    return self._data[self._front]
+
+  def dequeue(self):
+    """Remove and return the first element of the queue (i.e., FIFO).
+
+    Raise Empty exception if the queue is empty.
+    """
+    if self.is_empty():
+      raise Empty('Queue is empty')
+    answer = self._data[self._front]
+    self._data[self._front] = None         # help garbage collection
+    self._front = (self._front + 1) % len(self._data)
+    self._size -= 1
+    return answer
+
+  def enqueue(self, e):
+    """Add an element to the back of queue."""
+    if self._size == len(self._data):
+      self._resize(2 * len(self.data))     # double the array size
+    avail = (self._front + self._size) % len(self._data)
+    self._data[avail] = e
+    self._size += 1
+
+  def _resize(self, cap):                  # we assume cap >= len(self)
+    """Resize to a new list of capacity >= len(self)."""
+    old = self._data                       # keep track of existing list
+    self._data = [None] * cap              # allocate list with new capacity
+    walk = self._front
+    for k in range(self._size):            # only consider existing elements
+      self._data[k] = old[walk]            # intentionally shift indices
+      walk = (1 + walk) % len(old)         # use old size as modulus
+    self._front = 0                        # front has been realigned
+
+
+# In[3]:
+
+
+def timer(self):
+    t = 0
+    while t < self:
+        t += 1
+
+
+# In[5]:
+
+
+import sys
+
+A = ArrayStack()
+B = ArrayStack()
+C = ArrayQueue()
+D = ArrayQueue()
+
+globalCounter = 0   # Global counter from 0 to 180
+checker = 0
+timerA = -2
+timerB = -4
+counterA = counterB = counterC = counterD = 0   # counter for each stack and queue
+customerA = customerB = customerC = customerD = 0   #customer number for each stack and queue
+
+while globalCounter < 180:
+    globalCounter += 1
+    timerA += 1
+    timerB += 1
+    if globalCounter % 2 == 0 and globalCounter % 4 != 0:
+        customerA += 1
+        A.push(customerA)
+    if timerA == 4:
+        customerC += 1
+        A.pop()
+        C.enqueue(customerC)
+        timerA = 0
+    if len(A) > 4:
+            print(globalCounter)
+            print(len(A))
+            print(len(B))
+            print(len(C))
+            print(len(D))
+            sys.exit("Error: Overflow at A")
+    if globalCounter % 4 == 0:
+        customerB += 1
+        B.push(customerB)
+    if timerB == 3:
+        customerC += 1
+        B.pop()
+        C.enqueue(customerC)
+        timerB = -1
+    if len(B) > 4:
+            print(globalCounter)
+            print(len(A))
+            print(len(B))
+            print(len(C))
+            print(len(D))
+            sys.exit("Error: Overflow at B")
+    if C.is_empty() == False:
+        counterC += 1
+        if counterC == 3:
+            customerD += 1
+            C.dequeue()
+            D.enqueue(customerD)
+            counterC = 0
+        if len(C) > 3:
+            print(globalCounter)
+            print(len(A))
+            print(len(B))
+            print(len(C))
+            print(len(D))
+            sys.exit("Error: Overflow at C")
+    if D.is_empty() == False:
+        counterD += 1
+        if counterD == 4:
+            D.dequeue()
+            counterD = 0
+        if len(D) > 3:
+            print(globalCounter)
+            print(len(A))
+            print(len(B))
+            print(len(C))
+            print(len(D))
+            sys.exit("Error: Overflow at D")
+    if globalCounter % 30 == 0:
+        checker += 5
+        print("At " + str(checker) + " minutes:")
+        print(len(A))
+        print(len(B))
+        print(len(C))
+        print(len(D))
+
+
